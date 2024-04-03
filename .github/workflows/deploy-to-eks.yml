@@ -25,6 +25,16 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-2  # Specify the AWS region of your EKS cluster
+
+    - name: Log into Docker registry
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${{ secrets.DOCKER_REGISTRY_URL }}
+
+    - name: Tag Docker image
+      run: docker tag my-application:$(date +%s) ${{ secrets.DOCKER_REGISTRY_URL }}/my-application:${{ github.sha }}
+
+    - name: Push Docker image to registry
+      run: docker push ${{ secrets.DOCKER_REGISTRY_URL }}/my-application:${{ github.sha }}
+
     - name: Update kubeconfig for EKS
       run: aws eks --region eu-west-2 update-kubeconfig --name hello-world-cluster  # Replace with cluster name
     - name: Deploy application to EKS
