@@ -63,9 +63,10 @@ To deploy the application to an AWS EKS cluster, you need to have your AWS crede
 
 ### Deploy the Infrastructure
 
-Apply the Terraform configuration to provision the EKS cluster:
+Initiate and Apply the Terraform configuration to provision the EKS cluster:
 
 ```sh
+terraform init
 terraform apply
 ```
 
