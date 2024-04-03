@@ -37,6 +37,35 @@ Terraform configuration file that provisions an AWS EKS cluster using the AWS pr
 
 - Makes use of variable definitions for customization.
 
+## Rollback Procedure
+
+In the event that a deployment does not go as planned, or if an update causes issues in the production environment, it's crucial to have a rollback strategy to revert to the previous stable version of the application.
+
+### Automated Rollback with GitHub Actions
+
+The repository includes a GitHub Actions workflow that is dedicated to handling rollbacks. This workflow can be manually triggered via the GitHub UI and requires specifying the version to which you want to rollback.
+
+To initiate a rollback:
+
+1. Navigate to the `Actions` tab in the GitHub repository.
+2. Select the `Automated Rollback` workflow.
+3. Click on `Run workflow`.
+4. Enter the tag of the Docker image you want to rollback to. This is typically the commit SHA of the previous stable release.
+5. Click on `Run workflow` to start the rollback process.
+
+The rollback workflow will update the Kubernetes deployment to use the specified Docker image tag, effectively rolling back the application to that version.
+
+### Manual Rollback Using kubectl
+
+If you need to manually rollback to a previous deployment:
+
+1. Ensure you have `kubectl` configured with access to your Kubernetes cluster.
+2. Use the `rollout undo` command to revert the deployment to the previous version:
+
+```sh
+kubectl rollout undo deployment/<deployment-name>
+```
+
 ## Testing the Application
 
 To test the application, follow these steps:
