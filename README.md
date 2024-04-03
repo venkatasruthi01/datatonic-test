@@ -120,3 +120,49 @@ kubectl apply -f k8s/
 After deployment, you can access your application via the LoadBalancer URL or NodePort assigned to it by Kubernetes.
 
 For more information on managing and interacting with your AWS EKS cluster, please refer to the [AWS EKS documentation](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html).
+
+
+# Monitoring Setup Guide
+
+This repository contains a setup script (`setup-monitoring.sh`) for deploying Prometheus and Grafana on a Kubernetes cluster. Follow the steps below to set up monitoring for your cluster.
+
+## Setup Instructions
+
+1. **Run the setup script**: Execute the setup script to deploy Prometheus and Grafana on your Kubernetes cluster.
+   
+   ```bash
+   ./setup-monitoring.sh
+   ```
+
+2. **Accessing Grafana**:
+   - **URL**: To access Grafana, use the following URL:
+     ```
+     http://localhost:3000
+     ```
+   - **Username**: Use `admin` as the username.
+   - **Password**:  Use `EKS!sAWSome` as the password.
+   The password is dynamically generated during the installation. You can retrieve it by running the following command:
+   
+     ```bash
+     kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+     ```
+
+   Once you have the password, log in using the provided credentials.
+
+3. **Accessing Prometheus**:
+   - **URL**: Prometheus can be accessed using the following URL:
+     ```
+     http://prometheus-server.monitoring.svc.cluster.local
+     ```
+   - **Port Forwarding**: To access Prometheus locally, you can use port forwarding:
+   
+     ```bash
+     export POD_NAME=$(kubectl get pods --namespace monitoring -l "app.kubernetes.io/name=prometheus,app.kubernetes.io/instance=prometheus" -o jsonpath="{.items[0].metadata.name}")
+     kubectl --namespace monitoring port-forward $POD_NAME 9090
+     ```
+
+4. **Additional Notes**:
+   - Ensure that you have the necessary permissions to deploy resources on the cluster.
+   - For more information on running Prometheus and Grafana, visit their official websites ([Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/)).
+
+```
