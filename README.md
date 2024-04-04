@@ -81,7 +81,7 @@ To test the application, follow these steps:
 
 ```sh
 docker build -t my-application .
-docker run -p 80:80 my-application
+docker run -p 80:5000 my-application
 ```
 
 Then, open a web browser and navigate to `http://localhost` to see the "Hello, World!" message.
